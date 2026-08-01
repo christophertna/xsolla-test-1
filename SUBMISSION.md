@@ -18,25 +18,25 @@ Main points identified were (there were probably more but here is what we found,
 - bad repo path/branch --> CLI dumped a raw error
 
 ## What did you choose to implement or fix?
-# 1. npm test failing means the whole tool fails as well 
+1. npm test failing means the whole tool fails as well 
 Fix: make it write down "this failed" and keep going
 
-# 2. repo_path vs repoPath for the MCP tool
+2. repo_path vs repoPath for the MCP tool
 Fix: read the same name it asks for
 
-# 3. any paths with spaces between them were getting cut off
+3. any paths with spaces between them were getting cut off
 Fix: stop chopping the path at the first space
 
-# 4. renamed files looked broken/weird in the report
+4. renamed files looked broken/weird in the report
 Fix: detect renames properly, show one clean path
 
-# 5. asking for 'format --json' gave markdown anyways
+5. asking for 'format --json' gave markdown anyways
 Fix: just delete the json option since it doesn't work and isnt worth building right now.
 
-# 6. tool will execute any shell-command (no guardrail or permission list)
+6. tool will execute any shell-command (no guardrail or permission list)
 Fix: only allow `npm run <script>` where `<script>` is a real script name already in that repo's `package.json`. Reject everything else.
 
-# 7. bad repo path/branch --> CLI dumped a raw error
+7. bad repo path/branch --> CLI dumped a raw error
 Fix: CLI prints one clear "this path is bad" message and stops cleanly. MCP wraps the risky part in a try/catch so one bad request doesn't take the whole server down.
 
 ## What did you intentionally not do?
@@ -48,11 +48,11 @@ the CLI's `--format` flag, and any other place it was threaded through (ex: `Arg
 ## Interface decision
 
 - Decision: CLI-first / MCP-first / hybrid
-- Primary user and execution environment: CLI
-- Trust boundary and allowed capabilities:
-- Reliability, discoverability, latency/context, and output tradeoffs:
-- How supported interfaces remain consistent:
-- Evidence that would change this decision:
+- Primary user and execution environment: Hybrid, CLI-first default & MCP as a constrained adapter
+- Trust boundary and allowed capabilities: treat target repository as the trust boundary and only allows Git inspection there + validation commands that are exactly npm test, npm install, or npm run <script> when that script exists in that repository’s own package.json.
+- Reliability, discoverability, latency/context, and output tradeoffs: CLI is better for humans, MCP better for ai agents. hybrid design: CLI is the human-facing adapter that writes a md report to a file & the MCP interface is the agent-facing adapter that returns the same report as text, so tradeoff is explicit file-based output for humans vs lightweight text output for tools.
+- How supported interfaces remain consistent: the CLI and MCP should call the same pipline in 'core.ts' and share the same failure behavior
+- Evidence that would change this decision: if the product surface or code path shifted to make one adapter (CLI vs MCP) primary and the other secondary or rewriting core flow so both interfaces dont share same behavior.
 
 ## How did you use an AI coding agent?
 Used a skill to help me learn the repo and identify any potential weaknesses first that we agree together on.
