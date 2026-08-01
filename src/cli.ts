@@ -6,7 +6,6 @@ type Args = {
   command: string;
   repositoryPath?: string;
   baseRef?: string;
-  format?: "markdown" | "json";
   validations: string[];
 };
 
@@ -18,8 +17,6 @@ export function parseArgs(argv: string[]): Args {
       args.repositoryPath = argv[++index];
     } else if (token === "--base-ref") {
       args.baseRef = argv[++index];
-    } else if (token === "--format") {
-      args.format = argv[++index] as Args["format"];
     } else if (token === "--validate") {
       args.validations.push(argv[++index]);
     }
@@ -39,7 +36,6 @@ async function main() {
     repositoryPath: args.repositoryPath,
     baseRef: args.baseRef,
     validationCommands: args.validations,
-    format: args.format,
   });
   writeFileSync("review-report.md", report, "utf8");
   console.log("Review report written to review-report.md");

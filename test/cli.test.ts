@@ -7,4 +7,11 @@ describe("parseArgs", () => {
 
     expect(args.repositoryPath).toBe("/tmp/my repo/checkout");
   });
+
+  it("does not recognize --format as an argument, and produces no format field", () => {
+    const args = parseArgs(["review", "--repo", "/tmp/repo", "--format", "json"]);
+
+    expect(args).not.toHaveProperty("format");
+    expect(args.validations).toEqual([]);
+  });
 });
