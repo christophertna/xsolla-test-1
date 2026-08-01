@@ -13,12 +13,20 @@ const reviewRepositoryInputSchema = z.object({
 export type ReviewRepositoryInput = z.infer<typeof reviewRepositoryInputSchema>;
 
 export async function handleReviewRepository(input: ReviewRepositoryInput) {
-  const report = await reviewRepository({
-    repositoryPath: input.repo_path,
-    baseRef: input.baseRef,
-    validationCommands: input.validationCommands,
-  });
-  return { content: [{ type: "text" as const, text: report }] };
+  try {
+    const report = await reviewRepository({
+      repositoryPath: input.repo_path,
+      baseRef: input.baseRef,
+      validationCommands: input.validationCommands,
+    });
+    return { content: [{ type: "text" as const, text: report }] };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      content: [{ type: "text" as const, text: `Error: ${message}` }],
+      isError: true,
+    };
+  }
 }
 
 const server = new McpServer({ name: "repository-inspector", version: "2.0.0" });

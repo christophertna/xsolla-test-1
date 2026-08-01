@@ -5,6 +5,17 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { handleReviewRepository } from "../src/mcp-server.js";
 
+describe("handleReviewRepository error handling", () => {
+  it("catches a repository failure and returns an error result instead of throwing", async () => {
+    const missingPath = join(tmpdir(), "inspector-mcp-does-not-exist-xyz");
+
+    const result = await handleReviewRepository({ repo_path: missingPath });
+
+    expect(result.isError).toBe(true);
+    expect(result.content[0].text).toContain(missingPath);
+  });
+});
+
 function run(cwd: string, args: string[]): void {
   execFileSync("git", args, { cwd, encoding: "utf8" });
 }
