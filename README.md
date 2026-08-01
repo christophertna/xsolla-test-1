@@ -48,7 +48,7 @@ npm test
 ## CLI
 
 ```bash
-npm run inspector -- review --repo ./path/to/repo --format markdown
+npm run inspector -- review --repo ./path/to/repo
 npm run inspector -- review --repo ./path/to/repo --validate "npm test"
 ```
 

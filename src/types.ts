@@ -1,6 +1,6 @@
 export type ChangedFile = {
   path: string;
-  status: "added" | "modified" | "deleted" | "untracked";
+  status: "added" | "modified" | "deleted" | "untracked" | "renamed";
 };
 
 export type ValidationResult = {
@@ -13,5 +13,4 @@ export type ReviewRequest = {
   repositoryPath: string;
   baseRef?: string;
   validationCommands?: string[];
-  format?: "markdown" | "json";
 };
